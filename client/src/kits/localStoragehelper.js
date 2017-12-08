@@ -28,3 +28,20 @@ export function setItem(gobj) {
   // 3.0将obj存在localStorage中
   localStorage.setItem(KEY,JSON.stringify(obj));
 }
+
+// 覆盖一个值
+export function setItemReplace(gobj) {
+  // 1.0 从localStorage中获取商品的对象
+  var obj = getItem();
+  // 2.0
+  obj[gobj.gid] = gobj.count;
+  // 3.0将obj存储在localStorage中
+  localStorage.setItem(KEY,JSON.stringify(obj));
+}
+
+// 删除数据
+export function removeItem(goodsid){
+  var obj = getItem();
+  delete obj[goodsid];
+  localStorage.setItem(KEY,JSON.stringify(obj));
+}

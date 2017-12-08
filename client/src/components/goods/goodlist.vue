@@ -153,7 +153,7 @@
         this.$ajax.get(url).then(res => {
           console.log(res);
           this.topinfo = res.data.message;
-          console.log(topinfo);
+          // console.log(topinfo);
         })
       },
       // 2.0获取页面底部的商品数据

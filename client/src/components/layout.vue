@@ -9,12 +9,20 @@
             <a target="_blank" href="#"></a>
           </div>
           <div id="menu" class="right-box">
-            <a href="/login.html">登录</a>
-            <a href="/register.html">注册</a>
+            <router-link v-if="!islogin" to="/site/login">登录</router-link>
+            <!-- <a href="/login.html">登录</a> -->
+            <a v-if="!islogin" href="#">注册</a>
             <strong>|</strong>
+            <router-link v-if="islogin" to="/site/vipcenter">会员中心</router-link>
+            <!-- <a v-if="islogin" href="/register.html">会员中心</a> -->
+            <a v-if="islogin" @click="logout" href="javascript:void(0)">退出</a>
             <!-- <a href="/content/contact.html"><i class="iconfont icon-phone"></i>联系我们</a> -->
-            <a href="/cart.html" id="layoutbuycar"><i class="iconfont icon-cart"></i>
-              购物车(<span id="">{{buyTotalCount}}</span>)</a>
+            <!-- <a href="/cart.html" id="layoutbuycar"><i class="iconfont icon-cart"></i>
+              购物车(<span id="">{{buyTotalCount}}</span>)</a> -->
+              <router-link to="/site/car">
+                <i class="iconfont icon-cart"></i>
+                购物车(<span id="layoutbuycar">{{buyTotalCount}}</span>)
+              </router-link>
           </div>
         </div>
       </div>
@@ -84,7 +92,8 @@
   export default {
     data() {
       return {
-        buyTotalCount:0
+        buyTotalCount:0,
+        islogin :false
       }
     },
     mounted() {
@@ -119,8 +128,43 @@
         // 2.0将总数存储起来(选择localStorage)
         localStorage.setItem('buyTotalCount',this.buyTotalCount);
       })
+
+      this.checkLogin();
+      // 4.0利用vm的$on注册登录状态的改变
+      vm.$on('changelogin',(val)=>{
+        console.log(111);
+        // 获取localStorage中的是否登录的状态，key="logined"
+        this.checkLogin();
+      })
     },
     methods: {
+      // 注销
+      logout(){
+        var url = "/site/account/logout";
+        this.$ajax.get(url).then(res=>{
+          // console.log(res);
+          if(res.data.status==1){
+            this.$message.error(res.data.message);
+          }else{
+            // 注销成功
+            this.islogin = false;
+            localStorage.setItem('logined','false');
+            // 跳转到商品列表
+            this.$router.push({name:'goodlist'});
+          }
+        })
+      },
+      checkLogin(){
+        var res = localStorage.getItem('logined');
+        console.log(res);
+        if (res == "true") {
+            // 已经登录了
+            this.islogin = true;
+        } else {
+            // 已经注销了
+            this.islogin = false;
+        }
+      }
     }
   }
 </script>
